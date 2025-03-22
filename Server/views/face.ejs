@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizontal Scrolling Image Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .gallery-container {
+            width: 90%;
+            overflow-x: hidden;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            background: #fff;
+            padding: 10px;
+        }
+
+        .gallery {
+            display: flex;
+            gap: 10px;
+            cursor: grab;
+            overflow-x: scroll;
+            scroll-behavior: smooth;
+            padding: 10px;
+        }
+
+        .gallery img {
+            width: 200px;
+            height: 150px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            
+            user-select: none;
+        }
+
+        /* Hide Scrollbar */
+        .gallery::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Navigation Buttons */
+        .gallery-controls {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+
+        .gallery-controls button {
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            color: white;
+            font-size: 20px;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .gallery-controls button:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gallery-container">
+        <div class="gallery" id="imageGallery">
+            <img src="media/images/acne.jpg1" alt="Image 1">
+            <img src="media/images/acne.jpg" alt="Image 2">
+            <img src="media/images/acne.jpg" alt="Image 3">
+            <img src="media/images/acne.jpg" alt="Image 4">
+            <img src="media/images/acne.jpg" alt="Image 5">
+            <img src="media/images/acne.jpg" alt="Image 6">
+            <img src="media/images/acne.jpg" alt="Image 7">
+            <img src="media/images/acne.jpg" alt="Image 8">
+        </div>
+
+        <div class="gallery-controls">
+            <button id="prevBtn">❮</button>
+            <button id="nextBtn">❯</button>
+        </div>
+    </div>
+
+    <script>
+        const gallery = document.getElementById("imageGallery");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        let isDragging = false;
+        let startX, scrollLeft;
+
+        // Drag to Scroll
+        gallery.addEventListener("mousedown", (e) => {
+            isDragging = true;
+            startX = e.pageX - gallery.offsetLeft;
+            scrollLeft = gallery.scrollLeft;
+        });
+
+        gallery.addEventListener("mouseleave", () => isDragging = false);
+        gallery.addEventListener("mouseup", () => isDragging = false);
+        gallery.addEventListener("mousemove", (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - gallery.offsetLeft;
+            const walk = (x - startX) * 2;
+            gallery.scrollLeft = scrollLeft - walk;
+        });
+
+        // Button Click Scroll
+        prevBtn.addEventListener("click", () => {
+            gallery.scrollBy({ left: -300, behavior: "smooth" });
+        });
+
+        nextBtn.addEventListener("click", () => {
+            gallery.scrollBy({ left: 300, behavior: "smooth" });
+        });
+
+        // Keyboard Navigation
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowLeft") gallery.scrollBy({ left: -300, behavior: "smooth" });
+            if (e.key === "ArrowRight") gallery.scrollBy({ left: 300, behavior: "smooth" });
+        });
+    </script>
+
+</body>
+</html>

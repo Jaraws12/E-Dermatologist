@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Skincare AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <style>
+        /* General Styles */
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        /* Typography */
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; }
+        p { font-size: 1.1rem; }
+
+        /* Buttons */
+        .custom-link {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .custom-link:hover { background-color: #0056b3; }
+
+        /* Animations */
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .fade-in.show { opacity: 1; transform: translateY(0); }
+
+      
+
+
+    </style>
+</head>
+<body style="background-color:  #eceff1;">
+
+    <%- include('navbar2.ejs') %>
+
+    <% if (messages.welcome && messages.welcome.length > 0) { %>
+        <div class="alert alert-success welcome"><%= messages.welcome[0] %></div>
+    <% } %>
+
+    <% if (messages.error && messages.error.length > 0) { %>
+        <div class="alert alert-danger error danger"><%= messages.error[0] %></div>
+    <% } %>
+
+    <!-- Main Container -->
+    <div class="container mt-5">
+        <div class="row row1 align-items-center fade-in" data-aos="fade-up">
+            <div class="col-md-6 text-center p-4">
+                <img src="media/images/acne.jpg" class="img-fluid" style="width: 80%;"/>
+            </div>
+            <div class="col-md-6 p-4">
+                <h2>Revolutionizing Skincare with AI</h2>
+                <p>Our project analyzes facial features to provide personalized skincare recommendations. 
+                By leveraging advanced AI techniques, we can detect acne, wrinkles, dark circles, and more, offering 
+                users insights into their skin health and potential vitamin deficiencies. Our approach ensures 
+                that skincare is not just reactive but also proactive, helping individuals maintain optimal skin health.</p>
+                <ul class="list-unstyled">
+                    <li>✔️ AI-powered skin analysis</li>
+                    <li>✔️ Personalized skincare insights</li>
+                    <li>✔️ Face shape-based recommendations</li>
+                    <li>✔️ Nutritional deficiency detection</li>
+                    <li>✔️ Hair and grooming suggestions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Personalized Health Insights Section -->
+    <div class="container p-5">
+        <div class="row row2 align-items-center fade-in" data-aos="fade-right">
+            <div class="col-md-6 p-4">
+                <h1>Personalized Health Insights</h1>
+                <p>Our advanced analysis helps detect potential vitamin deficiencies by examining facial features,
+                   enabling users to take proactive steps toward better health. With our AI-driven insights, 
+                   users can make informed decisions about their skincare routine and overall well-being.</p>
+                <p>We go beyond traditional skincare solutions by integrating scientific research with AI technology, 
+                   ensuring that every recommendation is backed by data. Our system evaluates various parameters 
+                   such as skin texture, hydration levels, and pigmentation to provide a comprehensive skincare assessment.</p>
+                <a href="#" class="custom-link">Explore Your Health Insights</a>
+            </div>
+            <div class="col-md-6 p-4 text-center">
+                <img src="media/images/removeacne.jpg" class="img-fluid" style="width: 60%;"/>
+            </div>
+        </div>
+    </div>
+
+    <!-- Look-Maxing Section -->
+    <div class="container mb-5">
+        <div class="row row3 align-items-center fade-in" data-aos="fade-left">
+            <div class="col-md-6 p-4 text-center">
+                <img src="media/images/lookmaxing.jpg" class="img-fluid" style="width: 90%;" />
+            </div>
+            <div class="col-md-6 p-4">
+                <h1>Personalized Look-Maximization Guidance</h1>
+                <p>Our advanced analysis helps you enhance your appearance by providing customized recommendations 
+                   for skincare, grooming, and facial aesthetics. By assessing facial symmetry, skin texture, 
+                   and hair density, we offer tailored suggestions to help you look and feel your best.</p>
+                <p>Whether you’re looking for the best hairstyle to complement your face shape or seeking skincare 
+                   routines to maintain a youthful appearance, our AI-driven guidance ensures you receive the 
+                   best advice based on your unique features.</p>
+                <a href="#" class="custom-link">Explore Your Best Look</a>
+            </div>
+        </div>
+    </div>
+
+    <%- include('footer.ejs') %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+</body>
+</html>

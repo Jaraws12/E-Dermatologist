@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prediction Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .contain {
+      max-width: 600px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      margin: auto;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    input, button.btn {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button.btn {
+      background-color: #16b401; /* Primary button color */
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    button.btn:hover {
+      background-color: #3dbb0b; /* Hover state color */
+    }
+
+    button.btn:active {
+      background-color: #0f8c00; /* Active state color */
+      transform: scale(0.98); /* Slightly shrink button on click */
+    }
+
+    #questionContainer, #finalResponse {
+      display: none;
+    }
+
+  </style>
+</head>
+<body>
+  <%- include('navbar.ejs') %>
+  <div class="contain" style="transform: translateY(25vh);">
+    <h2>Prediction Form</h2>
+    <form id="predictionForm">
+      <label for="inputData"><strong>Enter your text for prediction:</strong></label>
+      <input type="text" name="data" id="inputData" required>
+      <button class="btn" type="submit">SUBMIT</button>
+    </form>
+
+    <div id="questionContainer">
+      <h3 id="currentQuestion"></h3>
+      <input type="text" id="answerInput" placeholder="Type your answer here..." required>
+      <button class="btn" id="nextButton">Next</button>
+    </div>
+
+    <div id="finalResponse">
+      <h3>LLM Response:</h3>
+      <p id="llmOutput"></p>
+    </div>
+    <p id="response"></p>
+  </div>
+
+  <script>
+    document.getElementById("predictionForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const inputText = document.getElementById("inputData").value;
+      try {
+        const response = await fetch("/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ input_text: inputText })
+        });
+        const result = await response.json();
+        if (result.questions && result.questions.length > 0) {
+          startSequentialQA(result.questions);
+          document.getElementById("predictionForm").style.display = "none";
+        } else {
+          document.getElementById("response").textContent = "No questions found.";
+        }
+      } catch (error) {
+        document.getElementById("response").textContent = "Error fetching prediction.";
+      }
+    });
+
+    function startSequentialQA(questions) {
+      const container = document.getElementById("questionContainer");
+      container.style.display = "block";
+      let currentIndex = 0;
+      const responses = [];
+      function showQuestion(index) {
+        document.getElementById("currentQuestion").textContent = questions[index];
+        document.getElementById("answerInput").value = "";
+        document.getElementById("nextButton").textContent = (index === questions.length - 1) ? "Submit Answers" : "Next";
+      }
+      document.getElementById("nextButton").addEventListener("click", async function handleAnswer() {
+        const answer = document.getElementById("answerInput").value.trim();
+        if (!answer) return alert("Please enter an answer before proceeding.");
+        responses.push({ question: questions[currentIndex], answer: answer });
+        currentIndex++;
+        if (currentIndex < questions.length) {
+          showQuestion(currentIndex);
+        } else {
+          try {
+            const submitResponse = await fetch("/submit", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ responses })
+            });
+            const data = await submitResponse.json();
+            console.log("Server Response:", data);
+
+            if (data.success) {
+                window.location.href = data.pdfUrl;
+            } else {
+                console.error("Error:", data.message);
+            }
+          } catch (error) {
+            document.getElementById("response").textContent = "Error submitting responses.";
+          }
+        }
+      });
+      showQuestion(currentIndex);
+    }
+  </script>
+</body>
+</html>
