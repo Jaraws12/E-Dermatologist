@@ -1,6 +1,6 @@
-TO USE OUR APP \n
-DOWNLOAD THE APP \n
-INSTALL ALL REQUIREMENTS IN 'package.json' AND 'requirement.txt' \n
-GO TO FOLDER SERVER \n
-CREATE A .env FILE WITH JWT_SECRET,API_KEY(GEMINI) \n
-RUN COMMAND 'node index.js' \n
+TO USE OUR APP <br />
+DOWNLOAD THE APP <br />
+INSTALL ALL REQUIREMENTS IN 'package.json' AND 'requirement.txt' <br />
+GO TO FOLDER SERVER <br />
+CREATE A .env FILE WITH JWT_SECRET,API_KEY(GEMINI) <br />
+RUN COMMAND 'node index.js' <br />
