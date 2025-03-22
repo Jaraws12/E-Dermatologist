@@ -1,0 +1,66 @@
+!pip install transformers
+!pip install transformers accelerate bitsandbytes
+
+!apt-get install nodejs npm
+!mkdir llama-api && cd llama-api && npm init -y
+!npm install express cors axios ngrok @huggingface/transformers
+
+!pip install flask flask_cors torch transformers accelerate bitsandbytes pyngrok
+
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+import torch
+from flask_cors import CORS
+from pyngrok import ngrok
+
+!ngrok authtoken ngrok_token
+
+
+model_name = "santanukumar07/Llama-2-7b-chat-finetune"
+
+# Enable 4-bit quantization to reduce memory usage
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.float16
+)
+
+# Load model with optimized settings
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    quantization_config=bnb_config,
+    device_map="auto"
+)
+
+# Load tokenizer
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+from transformers import pipeline
+import torch
+
+pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, max_length=1000)
+
+from flask import Flask, request, jsonify
+app = Flask(__name__)
+CORS(app)
+
+@app.route("/predict", methods=["POST"])
+def predict():
+    try:
+        data = request.json
+        input_text = data.get("input_text", "")
+
+        # Generate response
+        result = pipe(f"[INST] {input_text} [/INST]")
+        response_text = result[0]["generated_text"]
+
+        return jsonify({"response": response_text})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Start ngrok tunnel
+public_url = ngrok.connect(3000).public_url
+print(f"Public URL: {public_url}")
+
+# Run Flask server
+app.run(port=3000)
